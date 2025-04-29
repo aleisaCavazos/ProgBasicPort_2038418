@@ -4,10 +4,10 @@ import json
 import os
 
 # --- Configuración Inicial ---
-CLARIFAI_API_KEY = "TU_API_KEY"
-ALGOLIA_APP_ID = "TU_APP_ID"
-ALGOLIA_API_KEY = "TU_API_KEY"
-NEWSDATA_API_KEY = "TU_API_KEY"
+CLARIFAI_API_KEY = "510a23d1b1274d5e844b1cc8ae078203"
+ALGOLIA_APP_ID = "PF5QN69RSB"
+ALGOLIA_API_KEY = "1d8fdfa696bcb1c1a26de745830fa528"
+NEWSDATA_API_KEY = "pub_833010e3db99bd1944afea8743f6f88f50161"
 
 # --- Rutas de Archivos JSON ---
 HISTORIAL_PATH = "historial.json"
