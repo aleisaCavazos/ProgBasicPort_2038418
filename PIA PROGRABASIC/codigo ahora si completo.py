@@ -5,15 +5,20 @@ import os
 from dotenv import load_dotenv
 from colorama import init, Fore, Style
 
+#NOTA IMPORTANTE: Instalar pip install 'algoliasearch>=4,<5'
+#El programa mismo ya crea el archivo JSON de favoritos y historial si no existen, por lo que no es necesario crearlos manualmente
+#El ropa_500.json tiene la informacion de Algolia, siempre tenerlo ahi para que funcione el programa
+
+
 # --- Inicializar colorama ---
 init(autoreset=True)
 
 # --- Cargar variables de entorno ---
 load_dotenv()
-CLARIFAI_API_KEY = os.getenv("CLARIFAI_API_KEY")
-ALGOLIA_APP_ID = os.getenv("ALGOLIA_APP_ID")
-ALGOLIA_API_KEY = os.getenv("ALGOLIA_API_KEY")
-NEWSDATA_API_KEY = os.getenv("NEWSDATA_API_KEY")
+CLARIFAI_API_KEY = "050f9bbbe935bf7d921fb60840a678b7"
+ALGOLIA_APP_ID = "97VTQJZ1EI"
+ALGOLIA_API_KEY = "41d4f973e4c722dd607118d4d55148f1"
+NEWSDATA_API_KEY = "050f9bbbe935bf7d921fb60840a678b7"
 
 
 # --- Rutas de Archivos JSON ---
@@ -94,7 +99,7 @@ def buscar_por_texto():
     try:
         mostrar_info(f"Buscando '{query}' en Algolia...")
 
-        url = f"https://{ALGOLIA_APP_ID}-dsn.algolia.net/1/indexes/ropa/query"
+        url = f"https://{ALGOLIA_APP_ID}-dsn.algolia.net/1/indexes/ropa_500/query"
         headers = {
             "X-Algolia-API-Key": ALGOLIA_API_KEY,
             "X-Algolia-Application-Id": ALGOLIA_APP_ID,
