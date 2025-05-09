@@ -4,12 +4,14 @@ import json
 import os 
 from dotenv import load_dotenv
 from colorama import init, Fore, Style
+from openpyxl import Workbook
+from openpyxl.styles import Font
 
+#NOTA IMPORTANTE: Instalar pip install 'algoliasearch>=4,<5'
 #NOTA IMPORTANTE: Instalar pip install 'algoliasearch>=4,<5'
 #El programa mismo ya crea el archivo JSON de favoritos y historial si no existen, por lo que no es necesario crearlos manualmente
 #El ropa_500.json tiene la informacion de Algolia, siempre tenerlo ahi para que funcione el programa
-
-
+# instalar tambien pip install openpyxl / pip install pandas / pip install matplotlib
 # --- Inicializar colorama ---
 init(autoreset=True)
 
@@ -19,7 +21,6 @@ CLARIFAI_API_KEY = "050f9bbbe935bf7d921fb60840a678b7"
 ALGOLIA_APP_ID = "97VTQJZ1EI"
 ALGOLIA_API_KEY = "41d4f973e4c722dd607118d4d55148f1"
 NEWSDATA_API_KEY = "050f9bbbe935bf7d921fb60840a678b7"
-
 
 # --- Rutas de Archivos JSON ---
 HISTORIAL_PATH = "historial.json"
@@ -47,6 +48,30 @@ def mostrar_exito(mensaje):
 
 def mostrar_info(mensaje):
     print(Fore.CYAN + mensaje)
+
+# --- Exportar a Excel ---
+def exportar_a_excel(historial_path, favoritos_path, nombre_archivo="datos_ropa.xlsx"):
+    historial = cargar_json(historial_path)
+    favoritos = cargar_json(favoritos_path)
+
+    wb = Workbook()
+    ws1 = wb.active
+    ws1.title = "Historial"
+    ws1.append(["#", "Búsqueda"])
+    for i, entrada in enumerate(historial, 1):
+        ws1.append([i, entrada])
+    for cell in ws1["1:1"]:
+        cell.font = Font(bold=True)
+
+    ws2 = wb.create_sheet(title="Favoritos")
+    ws2.append(["#", "Producto y URL"])
+    for i, item in enumerate(favoritos, 1):
+        ws2.append([i, item])
+    for cell in ws2["1:1"]:
+        cell.font = Font(bold=True)
+
+    wb.save(nombre_archivo)
+    mostrar_exito(f"Archivo Excel guardado como '{nombre_archivo}'")
 
 # --- Funciones API ---
 def buscar_noticias():
@@ -113,7 +138,7 @@ def buscar_por_texto():
 
         resultados = response.json()
         favoritos = cargar_json(FAVORITOS_PATH)
-        
+
         if not resultados.get("hits"):
             mostrar_info("No se encontraron resultados.")
             return
@@ -126,7 +151,7 @@ def buscar_por_texto():
             agregar = input("¿Agregar a favoritos? (s/n): ").lower()
             if agregar == "s":
                 favoritos.append(f"{nombre} - {url_producto}")
-        
+
         guardar_json(FAVORITOS_PATH, favoritos)
 
         historial = cargar_json(HISTORIAL_PATH)
@@ -177,6 +202,7 @@ def menu():
 5. Ver favoritos
 6. Ver noticias sobre moda
 7. Salir
+8. Exportar historial y favoritos a Excel
 """)
         opcion = input("Selecciona una opción: ")
 
@@ -195,6 +221,8 @@ def menu():
         elif opcion == "7":
             mostrar_info("¡Hasta luego! 🛍️")
             break
+        elif opcion == "8":
+            exportar_a_excel(HISTORIAL_PATH, FAVORITOS_PATH)
         else:
             mostrar_error("Opción no válida. Intenta otra vez.")
 
