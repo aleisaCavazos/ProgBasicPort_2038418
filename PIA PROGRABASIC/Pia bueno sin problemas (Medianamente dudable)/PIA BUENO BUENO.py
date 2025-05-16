@@ -14,10 +14,8 @@ init(autoreset=True)
 
 # --- Cargar variables de entorno ---
 load_dotenv()
-CLARIFAI_API_KEY = "050f9bbbe935bf7d921fb60840a678b7"
 ALGOLIA_APP_ID = "97VTQJZ1EI"
 ALGOLIA_API_KEY = "41d4f973e4c722dd607118d4d55148f1"
-NEWSDATA_API_KEY = "050f9bbbe935bf7d921fb60840a678b7"
 
 
 # --- Rutas de Archivos JSON ---
@@ -48,47 +46,6 @@ def mostrar_info(mensaje):
     print(Fore.CYAN + mensaje)
 
 # --- Funciones API ---
-def buscar_noticias():
-    try:
-        url = f"https://newsdata.io/api/1/latest?apikey={NEWSDATA_API_KEY}&q=ropa&country=us"
-        respuesta = requests.get(url)
-        respuesta.raise_for_status()
-        noticias = respuesta.json()
-        mostrar_info("\n📰 Noticias recientes sobre moda:")
-        for i, articulo in enumerate(noticias.get("results", [])[:5]):
-            print(f"{i+1}. {articulo.get('title')}")
-    except Exception as e:
-        mostrar_error(f"Error al obtener noticias: {e}")
-
-def buscar_por_imagen():
-    try:
-        mostrar_info("(Simulación) Analizando imagen con Clarifai...")
-
-        headers = {
-            "Authorization": f"Key {CLARIFAI_API_KEY}",
-            "Content-Type": "application/json"
-        }
-        body = {
-            "inputs": [
-                {
-                    "data": {
-                        "image": {
-                            "url": "https://samples.clarifai.com/metro-north.jpg"
-                        }
-                    }
-                }
-            ]
-        }
-        response = requests.post(
-            "https://api.clarifai.com/v2/models/general-image-recognition/outputs",
-            headers=headers,
-            json=body
-        )
-        response.raise_for_status()
-        mostrar_exito("Imagen procesada exitosamente (simulado).")
-    except Exception as e:
-        mostrar_error(f"Error con la API de Clarifai: {e}")
-
 def buscar_por_texto():
     query = input("\n🔍 Describe la prenda que buscas: ").strip()
     if not query:
@@ -171,11 +128,9 @@ def menu():
 --- Menú Principal ---
 1. Registrarse
 2. Buscar ropa por descripción
-3. Buscar ropa por imagen
-4. Ver historial de productos
-5. Ver favoritos
-6. Ver noticias sobre moda
-7. Salir
+3. Ver historial de productos
+4. Ver favoritos
+5. Salir
 """)
         opcion = input("Selecciona una opción: ")
 
@@ -184,15 +139,12 @@ def menu():
         elif opcion == "2":
             buscar_por_texto()
         elif opcion == "3":
-            buscar_por_imagen()
+             ver_historial()
         elif opcion == "4":
-            ver_historial()
+           ver_favoritos()
         elif opcion == "5":
-            ver_favoritos()
-        elif opcion == "6":
-            buscar_noticias()
-        elif opcion == "7":
             mostrar_info("¡Hasta luego! 🛍️")
+
             break
         else:
             mostrar_error("Opción no válida. Intenta otra vez.")
